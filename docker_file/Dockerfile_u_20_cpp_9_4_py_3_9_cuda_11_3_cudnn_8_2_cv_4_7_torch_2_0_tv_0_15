@@ -1,0 +1,53 @@
+FROM nvidia/cuda:11.3.0-cudnn8-devel-ubuntu20.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
+ENV PATH /opt/conda/bin:$PATH
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    pkg-config \
+    libglvnd0 \
+    libgl1 \
+    libglx0 \
+    libegl1 \
+    libgles2 \
+    libglvnd-dev \
+    libgl1-mesa-dev \
+    libegl1-mesa-dev \
+    libgles2-mesa-dev \
+    cmake \
+    curl
+# Install Dependencies of Anaonda
+ RUN apt-get update --fix-missing && \
+     apt-get install -y wget bzip2 curl git && \
+     apt-get clean && \
+     rm -rf /var/lib/apt/lists/*
+
+# Istall Anconda3 and make conda enviroment
+RUN wget --quiet https://repo.anaconda.com/archive/Anaconda3-2022.10-Linux-x86_64.sh -O ~/conda.sh && \
+    /bin/bash ~/conda.sh -b -p /opt/conda && \
+    rm ~/conda.sh && \
+    /opt/conda/bin/conda clean -t && \
+    ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
+    conda update conda && \
+    echo ". /opt/conda/etc/profile.d/conda.sh" >> ~/.bashrc
+
+
+COPY env_u_20_cpp_9_4_py_3_9_cuda_11_3_cudnn_8_2_cv_4_7_torch_2_0_tv_0_15.yaml .
+RUN conda env create --file env_u_20_cpp_9_4_py_3_9_cuda_11_3_cudnn_8_2_cv_4_7_torch_2_0_tv_0_15.yaml
+RUN . /opt/conda/etc/profile.d/conda.sh && conda activate sg3_env
+RUN conda install cudatoolkit=11.3
+RUN pip install torch torchvision --extra-index-url https://download.pytorch.org/whl/cu113
+RUN pip install ipykernel
+RUN python -m ipykernel install --user --name sg3_env --display-name "stylegan3 Kernel"
+RUN apt-get update -y && \
+    apt-get upgrade -y
+RUN wget https://github.com/ninja-build/ninja/releases/download/v1.8.2/ninja-linux.zip
+RUN apt-get install unzip
+RUN unzip ninja-linux.zip -d /usr/local/bin/
+RUN update-alternatives --install /usr/bin/ninja ninja /usr/local/bin/ninja 1 --force
+RUN pip install pyrallis
+RUN pip install git+https://github.com/openai/CLIP.git
+RUN apt-get install -y libsm6 libxext6 libxrender-dev
+RUN pip install opencv-python 
+RUN echo "conda activate sg3_env" >> ~/.bashrc
