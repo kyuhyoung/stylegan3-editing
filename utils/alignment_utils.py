@@ -14,14 +14,17 @@ def get_landmark(filepath, detector, predictor):
     """
     img = dlib.load_rgb_image(filepath)
     dets = detector(img, 1)
-
+    #print(f'len(dets) : {len(dets)}');  exit(0)
+    #   This iteration means that only one (last) face is considered. 
     for k, d in enumerate(dets):
         shape = predictor(img, d)
-
+    
     t = list(shape.parts())
     a = []
-    for tt in t:
+    for iT, tt in enumerate(t):
+        #print(f'iT : {iT}, tt : {tt}')
         a.append([tt.x, tt.y])
+    #exit(0)
     lm = np.array(a)
     return lm
 
@@ -74,7 +77,7 @@ def get_alignment_positions(filepath: str, detector, predictor, eyes_distance_on
         x *= max(np.hypot(*eye_to_eye) * 2.0, np.hypot(*eye_to_mouth) * 1.8)
     y = np.flipud(x) * [-1, 1]
     c = eye_avg + eye_to_mouth * 0.1
-
+    #print(f'c : {c}, x : {x}, y : {y}');    exit(0)
     return c, x, y
 
 
@@ -156,6 +159,7 @@ def crop_face(filepath: str, detector, predictor, random_shift=0.0):
     if random_shift > 0:
         c = (c + np.hypot(*x) * 2 * random_shift * np.random.normal(0, 1, c.shape))
     quad, qsize = get_fixed_cropping_transformation(c, x)
+    #print(f'quad : {quad}, qsize : {qsize}');   exit(0)
     img = crop_face_by_transform(filepath, quad, qsize)
     return img
 

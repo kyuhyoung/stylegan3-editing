@@ -36,6 +36,7 @@ def load_encoder(checkpoint_path: Path, test_opts: Optional[TestOptions] = None,
         opts['stylegan_weights'] = Path(model_paths["stylegan3_ffhq_unaligned_pt"])
 
     if opts["encoder_type"] in ENCODER_TYPES['pSp']:
+        #print('aaa');   exit(0)
         opts = TrainOptions(**opts)
         if test_opts is not None:
             opts.update(dataclasses.asdict(test_opts))
@@ -45,6 +46,7 @@ def load_encoder(checkpoint_path: Path, test_opts: Optional[TestOptions] = None,
         if test_opts is not None:
             opts.update(dataclasses.asdict(test_opts))
         net = e4e(opts)
+        #print('bbb');   exit(0)
 
     print('Model successfully loaded!')
     if generator_path is not None:

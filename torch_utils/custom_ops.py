@@ -21,6 +21,7 @@ import torch.utils.cpp_extension
 # Global options.
 
 verbosity = 'brief' # Verbosity level: 'none', 'brief', 'full'
+#verbosity = 'full' # Verbosity level: 'none', 'brief', 'full'
 
 #----------------------------------------------------------------------------
 # Internal helper funcs.
@@ -105,19 +106,24 @@ def get_plugin(module_name, sources, headers=None, source_dir=None, **build_kwar
         #
         all_source_files = sorted(sources + headers)
         all_source_dirs = set(os.path.dirname(fname) for fname in all_source_files)
-        if len(all_source_dirs) == 1: # and ('TORCH_EXTENSIONS_DIR' in os.environ):
-
+        #print(f'len(all_source_dirs) : {len(all_source_dirs)}');  exit(0)
+        if len(all_source_dirs) == 1: # and ('TORCH_EXTENSIONS_DIR' in os.environ): 1
             # Compute combined hash digest for all source files.
             hash_md5 = hashlib.md5()
             for src in all_source_files:
+                #print(f'src : {src}');  exit(0)
                 with open(src, 'rb') as f:
+                #with open(src, 'r', encoding="utf-8") as f:
                     hash_md5.update(f.read())
 
             # Select cached build directory name.
             source_digest = hash_md5.hexdigest()
+            #print(f'module_name : {module_name}');  exit()
             build_top_dir = torch.utils.cpp_extension._get_build_directory(module_name, verbose=verbose_build) # pylint: disable=protected-access
+            #print(f'build_top_dir : {build_top_dir}');  exit()
             cached_build_dir = os.path.join(build_top_dir, f'{source_digest}-{_get_mangled_gpu_name()}')
-
+            #print(f'cached_build_dir : {cached_build_dir}');  #exit()
+            #print(f'os.path.isdir(cached_build_dir) : {os.path.isdir(cached_build_dir)}');    exit(0)
             if not os.path.isdir(cached_build_dir):
                 tmpdir = f'{build_top_dir}/srctmp-{uuid.uuid4().hex}'
                 os.makedirs(tmpdir)
@@ -132,8 +138,12 @@ def get_plugin(module_name, sources, headers=None, source_dir=None, **build_kwar
 
             # Compile.
             cached_sources = [os.path.join(cached_build_dir, os.path.basename(fname)) for fname in sources]
+            #print(f'verbose_build : {verbose_build}');  exit()
+            #print(f'cached_sources : {cached_sources}');  exit()
+            #print(f'build_kwargs : {build_kwargs}');  exit()
             torch.utils.cpp_extension.load(name=module_name, build_directory=cached_build_dir,
                 verbose=verbose_build, sources=cached_sources, **build_kwargs)
+            #exit(0)      
         else:
             torch.utils.cpp_extension.load(name=module_name, verbose=verbose_build, sources=sources, **build_kwargs)
 

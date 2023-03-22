@@ -29,6 +29,7 @@ class e4e(nn.Module):
         return encoder
 
     def load_weights(self):
+        #print(f'self.opts.checkpoint_path : {self.opts.checkpoint_path}');  exit(0);
         if self.opts.checkpoint_path is not None:
             print(f'Loading ReStyle e4e from checkpoint: {self.opts.checkpoint_path}')
             ckpt = torch.load(self.opts.checkpoint_path, map_location='cpu')

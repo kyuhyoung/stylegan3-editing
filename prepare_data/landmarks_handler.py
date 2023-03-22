@@ -4,7 +4,9 @@ from typing import Optional, List
 import dlib
 import numpy as np
 from tqdm import tqdm
+import sys
 
+#from configs.paths_config import model_paths
 from configs.paths_config import model_paths
 from utils.alignment_utils import get_stylegan_transform
 
@@ -45,6 +47,7 @@ class LandmarksHandler:
             cropped_path = cropped_frames_path / path.name
             aligned_path = aligned_frames_path / path.name
             res = get_stylegan_transform(str(cropped_path), str(aligned_path), detector, predictor)
+            #print(f'res[0] : {res[0]}\nres[1] : {res[1]}\nres[2]\n{res[2]}\nres[3]\n{res[3]}');  exit(0);
             if res is None:
                 print(f"Failed on: {cropped_path}")
                 continue

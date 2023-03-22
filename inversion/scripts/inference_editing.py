@@ -1,7 +1,11 @@
 import sys
 import time
 from typing import Optional
-
+'''
+from importlib import reload
+reload(sys)
+sys.setdefaultencoding('utf-8')
+'''
 import numpy as np
 import pyrallis
 import torch
@@ -26,13 +30,13 @@ def run(test_opts: TestOptions):
 
     out_path_results = test_opts.output_path / 'editing_results'
     out_path_results.mkdir(exist_ok=True, parents=True)
-
+    #exit(0)
     # update test options with options used during training
     net, opts = load_encoder(checkpoint_path=test_opts.checkpoint_path, test_opts=test_opts)
-
     print(f'Loading dataset for {opts.dataset_type}')
     dataset_args = data_configs.DATASETS[opts.dataset_type]
     transforms_dict = dataset_args['transforms'](opts).get_transforms()
+    #print(f'opts.data_path : {opts.data_path}, opts.landmarks_transforms_path : {opts.landmarks_transforms_path}');  exit()
     dataset = InferenceDataset(root=opts.data_path,
                                landmarks_transforms_path=opts.landmarks_transforms_path,
                                transform=transforms_dict['transform_inference'])
@@ -47,8 +51,9 @@ def run(test_opts: TestOptions):
 
     # prepare editing directions and ranges
     latent_editor = FaceEditor(net.decoder, generator_type=GeneratorType.ALIGNED)
-
+    #exit(0)
     avg_image = get_average_image(net)
+    #exit(0)
 
     resize_amount = (256, 256) if opts.resize_outputs else (opts.output_size, opts.output_size)
 

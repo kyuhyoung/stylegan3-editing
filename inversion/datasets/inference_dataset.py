@@ -11,6 +11,7 @@ class InferenceDataset(Dataset):
 
     def __init__(self, root: Path, landmarks_transforms_path: Path = None, transform=None):
         self.paths = sorted(data_utils.make_dataset(root))
+        #print(f'self.paths : {self.paths}');    exit(0)
         self.landmarks_transforms = self._get_landmarks_transforms(landmarks_transforms_path)
         self.transform = transform
 
@@ -18,6 +19,7 @@ class InferenceDataset(Dataset):
         return len(self.paths)
 
     def _get_landmarks_transforms(self, landmarks_transforms_path):
+        #print(f'landmarks_transforms_path : {landmarks_transforms_path}');  exit(0)
         if landmarks_transforms_path is not None:
             if not landmarks_transforms_path.exists():
                 raise ValueError(f"Invalid path for landmarks transforms: {landmarks_transforms_path}")

@@ -1,9 +1,13 @@
+import sys
 from pathlib import Path
+sys.path.append('.')
+sys.path.append('..')
 
 import pyrallis
 from dataclasses import dataclass
 
-from prepare_data.landmarks_handler import LandmarksHandler
+#from prepare_data.landmarks_handler import LandmarksHandler
+from landmarks_handler import LandmarksHandler
 
 
 @dataclass

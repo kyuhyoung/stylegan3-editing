@@ -84,7 +84,7 @@ def run(args: Options):
     tic = time.time()
     pool.map(partial(extract_on_paths, args=args), file_chunks)
     toc = time.time()
-    print(f'Mischief managed in {tic - toc}s')
+    print(f'Mischief managed in {toc - tic}s')
 
 
 if __name__ == '__main__':
